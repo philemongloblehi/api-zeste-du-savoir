@@ -54,4 +54,24 @@ class PlaceController extends FOSRestController
         
         return $place;
     }
+
+    /**
+     * @Rest\Post(
+     *      path = "/places"
+     * )
+     * 
+     * @Rest\View(statusCode=Response::HTTP_CREATED)
+     */
+    public function postPlacesAction(Request $request)
+    {
+        $place = new Place();
+        $place->setName($request->get('name'))
+              ->setAddress($request->get('address'));
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($place);
+        $em->flush();
+
+        return $place;
+    }
 }

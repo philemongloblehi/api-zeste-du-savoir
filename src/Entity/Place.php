@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PlaceRepository")
@@ -18,17 +19,18 @@ class Place
 
     /**
      * @ORM\Column(type="string", length=191)
+     * @Assert\NotBlank()
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank()
      */
     private $address;
 
-    public function __construct($name, $address) {
-        $this->name = $name;
-        $this->address = $address;
+    public function __construct() {
+
     }
 
     public function getId(): ?int
