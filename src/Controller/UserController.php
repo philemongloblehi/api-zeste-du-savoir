@@ -83,4 +83,25 @@ class UserController extends FOSRestController
         }
         
     }
+
+    /**
+     * @Rest\Delete(
+     *      path = "/users/{id}",
+     *      name = "users_remove",
+     *      requirements = {"id" = "\d+"}
+     * )
+     * 
+     * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
+     */
+    public function removeUserAction(Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('App:User')
+                   ->find($id);
+        
+        if ($user) {
+            $em->remove($user);
+            $em->flush();
+        }
+    }
 }
+

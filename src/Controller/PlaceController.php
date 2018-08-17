@@ -81,4 +81,25 @@ class PlaceController extends FOSRestController
         }
 
     }
+
+    /**
+     * @Rest\Delete(
+     *      path = "/places/{id}",
+     *      name = "place_remove",
+     *      requirements = {"id" = "\d+"}
+     * )
+     * 
+     * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
+     */
+    public function removePlaceAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $place = $em->getRepository('App:Place')
+                    ->find($id);
+
+        if ($place) {
+            $em->remove($place);
+            $em->flush();    
+        }
+    }
 }
