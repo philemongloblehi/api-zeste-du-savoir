@@ -136,4 +136,5 @@ class PlaceController extends FOSRestController
         }
         
     }
+
 }
