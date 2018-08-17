@@ -50,7 +50,7 @@ class PlaceController extends FOSRestController
                       ->find($id);
 
         if (empty($place)) {
-            return new JsonResponse(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+            return \FOS\RestBundle\View\View::create(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
         }
         
         return $place;
@@ -117,7 +117,7 @@ class PlaceController extends FOSRestController
                       ->getRepository('App:Place')
                       ->find($id);
         if (empty($place)) {
-            return new JsonResponse(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+            return \FOS\RestBundle\View\View::create(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
         }
 
         $form = $this->createForm(PlaceType::class, $place);
