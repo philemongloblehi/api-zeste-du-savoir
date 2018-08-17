@@ -102,4 +102,38 @@ class PlaceController extends FOSRestController
             $em->flush();    
         }
     }
+
+    /**
+     * @Rest\Put(
+     *      path = "/places/{id}",
+     *      name = "place_update",
+     *      requirements = {"id" = "\d+"}
+     * )
+     * 
+     * @Rest\View()
+     */
+    public function updatePlaceAction(Request $request, $id) {
+        $place = $this->getDoctrine()->getManager()
+                      ->getRepository('App:Place')
+                      ->find($id);
+        if (empty($place)) {
+            return new JsonResponse(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $form = $this->createForm(PlaceType::class, $place);
+
+        $form->submit($request->request->all());
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            // L'entité vient de la base, donc le merge n'est pas nécessaire
+            // Il est utilisé juste par soucis de clarté
+            $em->merge($place);
+            $em->flush();
+            return $place;
+        } else {
+            return $form;
+        }
+        
+    }
 }

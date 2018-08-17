@@ -103,5 +103,40 @@ class UserController extends FOSRestController
             $em->flush();
         }
     }
+
+    /**
+     * @Rest\Delete(
+     *      path = "/users/{id}",
+     *      name = "user_update",
+     *      requirements = {"id" = "\d+"}
+     * )
+     * 
+     * @Rest\View()
+     */
+    public function updateUserAction(Request $request, $id) {
+        $user = $this->getDoctrine()->getManager()
+                     ->getRepository('App:User')
+                     ->find($id);
+        if (empty($user)) {
+            return new JsonResponse(['message' => 'User not found'],Response::HTTP_NOT_FOUND );
+        }
+
+        $form = $this->createForm(UserType::class, $user);
+
+        $form->submit($request->request->all());
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            // L'entité vient de la base, donc le merge n'est pas nécessaire
+            // il est utilisé juste par soucis de clarté
+            $em->merge($user);
+            $em->flush();
+            return $user;
+        } else {
+            return $form;
+        }
+        
+        
+    }
 }
 
