@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use App\Form\Type\PlaceType;
 
 use App\Entity\Place;
 
@@ -65,13 +66,19 @@ class PlaceController extends FOSRestController
     public function postPlacesAction(Request $request)
     {
         $place = new Place();
-        $place->setName($request->get('name'))
-              ->setAddress($request->get('address'));
+        $form = $this->createForm(PlaceType::class, $place);
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($place);
-        $em->flush();
+        $form->submit($request->request->all()); // Validation des données
+        
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($place);
+            $em->flush();    
+            return $place;
+    
+        } else {
+            return $form;
+        }
 
-        return $place;
     }
 }

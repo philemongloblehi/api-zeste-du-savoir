@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
+use App\Form\Type\UserType;
+
+
 use App\Entity\User;
 
 class UserController extends FOSRestController
@@ -53,5 +56,31 @@ class UserController extends FOSRestController
         }
 
         return $user;
+    }
+
+    /**
+     * @Rest\Post(
+     *      path = "/users",
+     *      name = "user_create"
+     * )
+     * 
+     * @Rest\View(statusCode=Response::HTTP_CREATED)
+     */
+    public function postUsersAction(Request $request) {
+        
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+
+        $form->submit($request->request->all());
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            return $user;
+        } else {
+            return $form;
+        }
+        
     }
 }
